@@ -1,0 +1,30 @@
+# LoRA-specific Configuration (Baseline Comparison)
+defaults:
+  - base
+
+# LoRA PEFT Configuration
+peft:
+  method: "lora"
+  r: 16  # Rank (same as DoRA for fair comparison)
+  lora_alpha: 32
+  lora_dropout: 0.05
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+  bias: "none"
+  task_type: "CAUSAL_LM"
+  use_dora: false  # Standard LoRA
+
+# Override training for LoRA
+training:
+  output_dir: "./outputs/lora"
+  run_name: "lora_only"
+
+logging:
+  wandb_run_name: "lora_finetuning"
+  wandb_tags: ["lora", "finetuning", "no-rag"]

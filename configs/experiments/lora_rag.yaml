@@ -1,0 +1,23 @@
+# Experiment 5: LoRA + RAG
+defaults:
+  - ../lora
+  - ../rag
+
+experiment:
+  name: "lora_rag"
+  description: "LoRA fine-tuned model with RAG retrieval"
+  condition: "lora_rag"
+
+# LoRA enabled
+peft:
+  enabled: true
+
+# RAG enabled
+rag:
+  enabled: true
+
+mode: "train"  # Train then evaluate with RAG
+
+logging:
+  wandb_run_name: "lora_plus_rag"
+  wandb_tags: ["lora", "rag", "finetuning", "retrieval", "ablation"]

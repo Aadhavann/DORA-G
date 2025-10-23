@@ -1,0 +1,23 @@
+# Experiment 1: Baseline (No fine-tuning, No RAG)
+defaults:
+  - ../base
+
+experiment:
+  name: "baseline"
+  description: "Base DeepSeek-Coder model with no modifications"
+  condition: "baseline"
+
+# Disable PEFT
+peft:
+  enabled: false
+
+# Disable RAG
+rag:
+  enabled: false
+
+# Evaluation only (no training)
+mode: "eval"
+
+logging:
+  wandb_run_name: "baseline_no_ft_no_rag"
+  wandb_tags: ["baseline", "no-finetuning", "no-rag", "ablation"]

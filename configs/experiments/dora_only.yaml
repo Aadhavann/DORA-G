@@ -1,0 +1,22 @@
+# Experiment 3: DoRA Only (Fine-tuning, No RAG)
+defaults:
+  - ../dora
+
+experiment:
+  name: "dora_only"
+  description: "DoRA fine-tuned model without RAG"
+  condition: "dora_only"
+
+# DoRA enabled (inherited from dora.yaml)
+peft:
+  enabled: true
+
+# Disable RAG
+rag:
+  enabled: false
+
+mode: "train"
+
+logging:
+  wandb_run_name: "dora_only_no_rag"
+  wandb_tags: ["dora", "finetuning", "no-rag", "ablation"]

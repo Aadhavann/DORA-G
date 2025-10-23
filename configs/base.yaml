@@ -1,0 +1,89 @@
+# Base Configuration for DoRA-G Research Project
+defaults:
+  - _self_
+
+# Model Configuration
+model:
+  name: "deepseek-ai/deepseek-coder-6.7b-instruct"
+  cache_dir: "${oc.env:MODEL_CACHE_DIR,./models_cache}"
+  device_map: "auto"
+  quantization:
+    load_in_4bit: true
+    bnb_4bit_compute_dtype: "bfloat16"
+    bnb_4bit_use_double_quant: true
+    bnb_4bit_quant_type: "nf4"
+  max_length: 2048
+
+# Training Configuration
+training:
+  output_dir: "${oc.env:OUTPUT_DIR,./outputs}"
+  num_train_epochs: 3
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 8
+  gradient_accumulation_steps: 8  # Effective batch size = 32
+  learning_rate: 2.0e-4
+  lr_scheduler_type: "cosine"
+  warmup_ratio: 0.03
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+  logging_steps: 10
+  save_steps: 500
+  eval_steps: 500
+  save_total_limit: 3
+  fp16: false
+  bf16: true
+  gradient_checkpointing: true
+  optim: "paged_adamw_8bit"
+  seed: 42
+
+# Data Configuration
+data:
+  train_datasets:
+    - name: "CodeAlpaca-20k"
+      path: "sahil2801/CodeAlpaca-20k"
+      split: "train"
+    - name: "Magicoder-Evol-Instruct-110k"
+      path: "ise-uiuc/Magicoder-Evol-Instruct-110k"
+      split: "train"
+  validation_split: 0.05
+  max_samples: null  # Set to int for debugging
+  preprocessing:
+    max_length: 2048
+    truncation: true
+    padding: false
+
+# Evaluation Configuration
+evaluation:
+  benchmarks:
+    - "humaneval"
+    - "mbpp"
+    - "ds1000"
+    - "unseen_api"
+  pass_k: [1, 10]
+  temperature: 0.0  # Deterministic for pass@1
+  top_p: 0.95
+  num_samples: 1
+  max_new_tokens: 512
+  batch_size: 8
+
+# Logging & Experiment Tracking
+logging:
+  use_wandb: true
+  wandb_project: "dora-rag-code-generation"
+  wandb_entity: null  # Set to your W&B username
+  log_model: true
+  report_to: ["wandb"]
+
+# Reproducibility
+reproducibility:
+  seed: 42
+  deterministic: true
+  cudnn_benchmark: false
+
+# Paths
+paths:
+  data_dir: "${oc.env:DATA_DIR,./data}"
+  output_dir: "${oc.env:OUTPUT_DIR,./outputs}"
+  cache_dir: "${oc.env:CACHE_DIR,./cache}"
+  checkpoints_dir: "${oc.env:CHECKPOINTS_DIR,./checkpoints}"
+  logs_dir: "${oc.env:LOGS_DIR,./logs}"

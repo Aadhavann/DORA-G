@@ -1,0 +1,23 @@
+# Experiment 6: DoRA + RAG (Main Contribution)
+defaults:
+  - ../dora
+  - ../rag
+
+experiment:
+  name: "dora_rag"
+  description: "DoRA fine-tuned model with RAG retrieval - MAIN CONTRIBUTION"
+  condition: "dora_rag"
+
+# DoRA enabled
+peft:
+  enabled: true
+
+# RAG enabled
+rag:
+  enabled: true
+
+mode: "train"  # Train then evaluate with RAG
+
+logging:
+  wandb_run_name: "dora_plus_rag_MAIN"
+  wandb_tags: ["dora", "rag", "finetuning", "retrieval", "main-contribution", "ablation"]

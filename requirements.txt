@@ -1,0 +1,50 @@
+# Core Dependencies
+torch>=2.1.0
+transformers>=4.36.0
+peft>=0.7.0
+accelerate>=0.25.0
+bitsandbytes>=0.41.0
+
+# Data Processing
+datasets>=2.16.0
+numpy>=1.24.0
+pandas>=2.0.0
+
+# RAG & Retrieval
+faiss-cpu>=1.7.4  # For local dev; use faiss-gpu on RunPod/GPU environments
+# faiss-gpu>=1.7.4  # Uncomment for GPU deployment (auto-selected in Dockerfile)
+sentence-transformers>=2.2.0
+rank-bm25>=0.2.2
+
+# Evaluation
+evaluate>=0.4.1
+human-eval>=1.0.0
+sacrebleu>=2.3.1
+nltk>=3.8.1
+codebleu>=0.1.0
+
+# Experiment Tracking
+wandb>=0.16.0
+hydra-core>=1.3.0
+omegaconf>=2.3.0
+
+# Code Execution & Safety
+docker>=7.0.0
+psutil>=5.9.0
+
+# Testing & Quality
+pytest>=7.4.0
+black>=23.0.0
+flake8>=6.1.0
+isort>=5.12.0
+
+# Utilities
+tqdm>=4.66.0
+python-dotenv>=1.0.0
+scikit-learn>=1.3.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+jupyterlab>=4.0.0
+
+# Optional: For debugging and profiling
+ipdb>=0.13.13

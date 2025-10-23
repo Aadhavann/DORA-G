@@ -1,0 +1,62 @@
+# RAG Retrieval Configuration
+defaults:
+  - base
+
+# RAG System Configuration
+rag:
+  enabled: true
+
+  # Retrieval Corpus
+  corpus:
+    name: "CodeSearchNet"
+    language: "python"  # Start with Python, can expand to multi-language
+    path: "${oc.env:DATA_DIR,./data}/codesearchnet"
+    max_samples: null  # Use full corpus
+
+  # Embedding Model
+  embedder:
+    model_name: "sentence-transformers/all-mpnet-base-v2"
+    dimension: 768
+    batch_size: 32
+    device: "cuda"
+    normalize_embeddings: true
+
+  # FAISS Index
+  index:
+    type: "IVF"  # IVFFlat for large-scale retrieval
+    nlist: 4096  # Number of clusters
+    nprobe: 32   # Number of clusters to search
+    metric: "inner_product"  # Use with normalized embeddings
+    index_path: "${oc.env:DATA_DIR,./data}/faiss_index"
+
+  # Retrieval Settings
+  retrieval:
+    top_k: 3
+    min_similarity: 0.5  # Minimum cosine similarity threshold
+    max_context_length: 512  # Max tokens from retrieved snippets
+    deduplicate: true
+
+  # Context Injection
+  prompt:
+    template: "retrieval_augmented"  # Uses retrieved code in prompt
+    separator: "\n### Retrieved Code Examples:\n"
+    code_format: "```python\n{code}\n```\n"
+    instruction: "Use the following code examples as reference if helpful:\n"
+
+# BM25 Sparse Retrieval (Optional Baseline)
+bm25:
+  enabled: false
+  k1: 1.5
+  b: 0.75
+  top_k: 5
+
+# Hybrid Retrieval (Dense + Sparse)
+hybrid:
+  enabled: false
+  dense_weight: 0.7
+  sparse_weight: 0.3
+
+logging:
+  wandb_tags: ["rag", "retrieval"]
+  log_retrieval_quality: true
+  log_retrieved_examples: 10  # Log first N examples to W&B

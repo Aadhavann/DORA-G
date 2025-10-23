@@ -1,0 +1,31 @@
+# DoRA-specific Configuration
+defaults:
+  - base
+
+# DoRA PEFT Configuration
+peft:
+  method: "dora"
+  r: 16  # Rank
+  lora_alpha: 32
+  lora_dropout: 0.05
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+  bias: "none"
+  task_type: "CAUSAL_LM"
+  # DoRA-specific parameters
+  use_dora: true  # This enables magnitude-direction decomposition
+
+# Override training for DoRA
+training:
+  output_dir: "./outputs/dora"
+  run_name: "dora_only"
+
+logging:
+  wandb_run_name: "dora_finetuning"
+  wandb_tags: ["dora", "finetuning", "no-rag"]

@@ -1,0 +1,23 @@
+# Experiment 4: RAG Only (No Fine-tuning, With RAG)
+defaults:
+  - ../base
+  - ../rag
+
+experiment:
+  name: "rag_only"
+  description: "Base model with RAG retrieval, no fine-tuning"
+  condition: "rag_only"
+
+# Disable PEFT
+peft:
+  enabled: false
+
+# Enable RAG (inherited from rag.yaml)
+rag:
+  enabled: true
+
+mode: "eval"  # Eval only, no training
+
+logging:
+  wandb_run_name: "rag_only_no_ft"
+  wandb_tags: ["rag", "no-finetuning", "retrieval", "ablation"]

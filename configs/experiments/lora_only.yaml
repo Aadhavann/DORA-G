@@ -1,0 +1,22 @@
+# Experiment 2: LoRA Only (Fine-tuning, No RAG)
+defaults:
+  - ../lora
+
+experiment:
+  name: "lora_only"
+  description: "LoRA fine-tuned model without RAG"
+  condition: "lora_only"
+
+# LoRA enabled (inherited from lora.yaml)
+peft:
+  enabled: true
+
+# Disable RAG
+rag:
+  enabled: false
+
+mode: "train"  # Will train then evaluate
+
+logging:
+  wandb_run_name: "lora_only_no_rag"
+  wandb_tags: ["lora", "finetuning", "no-rag", "ablation"]
