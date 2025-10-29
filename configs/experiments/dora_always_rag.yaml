@@ -1,0 +1,59 @@
+# Standard DoRA+RAG: Always retrieve (baseline for comparison)
+
+defaults:
+  - ../dora
+  - ../rag
+
+experiment:
+  name: "dora_always_rag"
+  description: "DoRA with always-on RAG (baseline)"
+
+# PEFT configuration (DoRA)
+peft:
+  enabled: true
+  method: "dora"
+  use_dora: true
+  r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+  bias: "none"
+
+# Standard RAG (always retrieve)
+rag:
+  enabled: true
+  adaptive: false  # Always retrieve
+
+  # Retrieval settings
+  retrieval:
+    top_k: 3
+    use_reranking: false
+
+  # Index settings
+  index:
+    index_path: "${oc.env:DATA_DIR,./data}/faiss_index"
+
+# Training configuration
+training:
+  num_train_epochs: 1
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 8
+  learning_rate: 2e-4
+  warmup_steps: 100
+  logging_steps: 50
+  eval_steps: 500
+  save_steps: 500
+  save_total_limit: 2
+  gradient_checkpointing: true
+  fp16: true
+
+# Evaluation
+benchmarks: ["humaneval"]

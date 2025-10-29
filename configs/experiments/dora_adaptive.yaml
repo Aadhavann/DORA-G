@@ -1,0 +1,71 @@
+# Adaptive DoRA+RAG: Uncertainty-guided retrieval
+# This is your main contribution!
+
+defaults:
+  - ../dora
+  - ../rag
+
+experiment:
+  name: "dora_adaptive"
+  description: "DoRA with adaptive uncertainty-based retrieval"
+
+# PEFT configuration (DoRA)
+peft:
+  enabled: true
+  method: "dora"
+  use_dora: true
+  r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+  bias: "none"
+
+# Adaptive RAG configuration
+rag:
+  enabled: true
+  adaptive: true  # Enable adaptive retrieval
+  oracle_mode: false  # Set to true for oracle baseline
+
+  # Uncertainty estimation settings
+  uncertainty_method: "entropy"  # Options: entropy, variance, mc_dropout
+  uncertainty_threshold: "auto"  # Will be tuned on validation set, or set to float (e.g., 0.7)
+
+  # Threshold search space for tuning
+  threshold_search_space: [0.3, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5]
+
+  # Retrieval settings
+  retrieval:
+    top_k: 3
+    use_reranking: false
+
+  # Index settings
+  index:
+    index_path: "${oc.env:DATA_DIR,./data}/faiss_index"
+
+# Training configuration (fast iteration for 5-day sprint)
+training:
+  num_train_epochs: 1  # Start with 1 epoch for speed
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 8
+  learning_rate: 2e-4
+  warmup_steps: 100
+  logging_steps: 50
+  eval_steps: 500
+  save_steps: 500
+  save_total_limit: 2
+  gradient_checkpointing: true
+  fp16: true
+
+# Evaluation benchmarks
+benchmarks: ["humaneval"]  # Start with HumanEval, add mbpp later if time permits
+
+# Oracle creation settings (for scripts/02_create_oracle.py)
+oracle_max_examples: null  # Set to int (e.g., 50) for faster oracle creation during testing
